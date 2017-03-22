@@ -4,13 +4,89 @@
     }
 
     function buildGameImg(game) {
-        return '<img src="' + getSteamIconUrl(game.appid, game.img_icon_url) + '" alt="' + game.name + '" title="' + game.name + '" />';
+        return '<img src="' + getSteamIconUrl(game.appid, game.img_icon_url) + '" alt="' + game.name + '" title="' + game.name + '" width="' + game.width + '" height="' + game.width + '" />';
+    }
+
+    function getMaxValue(games, attribute) {
+        var max = games[0][attribute];
+
+        for (var i = 1; i < games.length; ++i) {
+            if (games[i][attribute] > max) {
+                max = games[i][attribute];
+            }
+        }
+
+        return max;
+    }
+
+    function getMinValue(games, attribute) {
+        var min = games[0][attribute];
+
+        for (var i = 1; i < games.length; ++i) {
+            if (games[i][attribute] < min) {
+                min = games[i][attribute];
+            }
+        }
+
+        return min;
+    }
+
+    function orderGames(games) {
+        var optionsMap = {
+            'none': null,
+            'played': { name: 'playtime_forever', order: 1 },
+            'name': { name: 'name', order: -1 }
+        };
+
+        var sortOption = document.querySelector('input[name="sort-options"]:checked').value;
+
+        var sortAttribute = optionsMap[sortOption];
+
+        if (sortAttribute === null) {
+            return games;
+        }
+
+        var sorted = games.sort(function (left, right) {
+            return right[sortAttribute.name] > left[sortAttribute.name] ? 1 * sortAttribute.order : -1 * sortAttribute.order;
+        });
+
+        return sorted;
+    }
+
+    function scaleGames(games) {
+        var minWidth = 32;
+        var maxWidth = 128;
+        var optionsMap = { 'none': null, 'played': 'playtime_forever' };
+
+        var scaleOption = document.querySelector('input[name="scale-options"]:checked').value;
+
+        var scaleAttribute = optionsMap[scaleOption];
+
+        console.log(scaleAttribute);
+        if (scaleAttribute === null) {
+            return games;
+        }
+
+        var maxValue = getMaxValue(games, scaleAttribute);
+        var minValue = getMinValue(games, scaleAttribute);
+
+        for (var i = 0; i < games.length; ++i) {
+            var game = games[i];
+            var value = game[scaleAttribute];
+
+            game.width = minWidth + (maxWidth - minWidth) * (value - minValue) / (maxValue - minValue);
+        }
+
+        return games;
     }
 
     function makeArt(games) {
         var art = document.getElementById('this-is-art');
 
         var arts = [];
+
+        games = orderGames(games);
+        games = scaleGames(games);
         for (var i = 0; i < games.length; ++i) {
             var game = games[i];
 
@@ -26,6 +102,12 @@
         var baseUrl = '/api/SteamProfile/';
         var steamId = document.getElementById('steam-id').value;
 
+        if (steamId === '') {
+            alert('missing steam id');
+            return 0;
+
+            // TODO - better
+        }
         var url = baseUrl + steamId;
         var request = new XMLHttpRequest();
         request.open('GET', url, true);

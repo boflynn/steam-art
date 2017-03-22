@@ -10,7 +10,6 @@
 <form class="form-horizontal">
     <fieldset>
 
-        <!-- Text input-->
         <div class="form-group">
             <label class="col-md-4 control-label" for="textinput">Steam ID</label>
             <div class="col-md-4">
@@ -18,11 +17,52 @@
             </div>
         </div>
 
-        <!-- Button -->
         <div class="form-group">
             <label class="col-md-4 control-label">&nbsp;</label>
             <div class="col-md-4">
                 <button id="make-art" name="make-art" class="btn btn-primary">Load</button>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="scale-options">Scale Option</label>
+            <div class="col-md-4">
+                <div class="radio">
+                    <label for="scale-option-none">
+                        <input type="radio" name="scale-options" id="scale-option-none" value="none" checked="checked">
+                        None
+                    </label>
+                </div>
+                <div class="radio">
+                    <label for="scale-option-played">
+                        <input type="radio" name="scale-options" id="scale-option-played" value="played">
+                        Total Time Played
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="sort-options">Sort Option</label>
+            <div class="col-md-4">
+                <div class="radio">
+                    <label for="sort-option-none">
+                        <input type="radio" name="sort-options" id="sort-option-none" value="none" checked="checked">
+                        None
+                    </label>
+                </div>
+                <div class="radio">
+                    <label for="sort-option-played">
+                        <input type="radio" name="sort-options" id="sort-option-played" value="played">
+                        Total Time Played
+                    </label>
+                </div>
+                <div class="radio">
+                    <label for="sort-option-name">
+                        <input type="radio" name="sort-options" id="sort-option-name" value="name">
+                        Name
+                    </label>
+                </div>
             </div>
         </div>
 
