@@ -68,7 +68,6 @@
 
         var scaleAttribute = optionsMap[scaleOption];
 
-        console.log(scaleAttribute);
         if (scaleAttribute === null) {
             return games;
         }
@@ -110,7 +109,9 @@
 
         if (steamId === '') {
             alert('missing steam id');
-            return 0;
+
+            evt.preventDefault();
+            return false;
 
             // TODO - better
         }
