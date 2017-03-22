@@ -1,34 +1,40 @@
 ﻿(function () {
+    Object.defineProperty(Array.prototype, 'max', {
+        enumerable: false,
+        value: function (attribute) {
+            var max = this[0][attribute];
+
+            for (var i = 1; i < this.length; ++i) {
+                if (this[i][attribute] > max) {
+                    max = this[i][attribute];
+                }
+            }
+
+            return max;
+        }
+    });
+
+    Object.defineProperty(Array.prototype, 'min', {
+        enumerable: false,
+        value: function (attribute) {
+            var min = this[0][attribute];
+
+            for (var i = 1; i < this.length; ++i) {
+                if (this[i][attribute] < min) {
+                    min = this[i][attribute];
+                }
+            }
+
+            return min;
+        }
+    });
+
     function getSteamIconUrl(appId, iconHash) {
         return 'http://media.steampowered.com/steamcommunity/public/images/apps/' + appId + '/' + iconHash + '.jpg';
     }
 
     function buildGameImg(game) {
         return '<img src="' + getSteamIconUrl(game.appid, game.img_icon_url) + '" alt="' + game.name + '" title="' + game.name + '" width="' + game.width + '" height="' + game.width + '" />';
-    }
-
-    function getMaxValue(games, attribute) {
-        var max = games[0][attribute];
-
-        for (var i = 1; i < games.length; ++i) {
-            if (games[i][attribute] > max) {
-                max = games[i][attribute];
-            }
-        }
-
-        return max;
-    }
-
-    function getMinValue(games, attribute) {
-        var min = games[0][attribute];
-
-        for (var i = 1; i < games.length; ++i) {
-            if (games[i][attribute] < min) {
-                min = games[i][attribute];
-            }
-        }
-
-        return min;
     }
 
     function orderGames(games) {
@@ -67,8 +73,8 @@
             return games;
         }
 
-        var maxValue = getMaxValue(games, scaleAttribute);
-        var minValue = getMinValue(games, scaleAttribute);
+        var maxValue = games.max(scaleAttribute);
+        var minValue = games.min(scaleAttribute);
 
         for (var i = 0; i < games.length; ++i) {
             var game = games[i];
