@@ -29,12 +29,23 @@
         }
     });
 
-    function getSteamIconUrl(appId, iconHash) {
-        return 'http://media.steampowered.com/steamcommunity/public/images/apps/' + appId + '/' + iconHash + '.jpg';
-    }
+    var Game = function (jsonGame) {
+        this.appid = jsonGame.appid;
+        this.img_icon_url = jsonGame.img_icon_url;
+        this.name = jsonGame.name;
+        this.playtime_forever = jsonGame.playtime_forever;
+    };
 
-    function buildGameImg(game) {
-        return '<img src="' + getSteamIconUrl(game.appid, game.img_icon_url) + '" alt="' + game.name + '" title="' + game.name + '" width="' + game.width + '" height="' + game.width + '" />';
+    Game.prototype.steamIconUrl = function () {
+        return 'http://media.steampowered.com/steamcommunity/public/images/apps/' + this.appid + '/' + this.img_icon_url + '.jpg';
+    };
+
+    Game.prototype.gameImg = function () {
+        return '<img src="' + this.steamIconUrl() + '" alt="' + this.name + '" title="' + this.name + '" width="' + this.width + '" height="' + this.width + '" />';
+    };
+
+    function createGame(jsonGame) {
+        return new Game(jsonGame);
     }
 
     function orderGames(games) {
@@ -92,11 +103,12 @@
 
         games = orderGames(games);
         games = scaleGames(games);
+
         for (var i = 0; i < games.length; ++i) {
             var game = games[i];
 
             if (game.playtime_forever !== 0) {
-                arts.push(buildGameImg(game));
+                arts.push(game.gameImg());
             }
         }
 
@@ -121,7 +133,7 @@
 
         request.onload = function (event) {
             if (request.status >= 200 && request.status < 400) {
-                var results = JSON.parse(request.responseText);
+                var results = JSON.parse(request.responseText).map(createGame);
 
                 makeArt(results);
             } else {
